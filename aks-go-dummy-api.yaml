@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-dummy-api-server
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  selector:
+    matchLabels:
+      app: go-dummy-api-server
+  template:
+    metadata:
+      labels:
+        app: go-dummy-api-server
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: go-dummy-api-server
+        image: 36raftsgodummyapi.azurecr.io/web:v1
+        ports:
+        - containerPort: 1323
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-dummy-api-server
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 1323
+  selector:
+    app: go-dummy-api-server
+
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: go-dummy-api-server
+#spec:
+#  type: NodePort
+#  selector:
+#    app: go-dummy-api-server
+#  ports:
+#  - protocol: TCP
+#    port: 3000
+#    targetPort: 1323
+#    nodePort: 30300
