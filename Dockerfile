@@ -1,15 +1,12 @@
-FROM golang:1.12.7 as builder
-
-RUN curl -fsSL -o /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.5.4/dep-linux-amd64 \
-  && chmod +x /usr/local/bin/dep
+FROM golang:1.13 as builder
 
 RUN mkdir -p /go/src/go-dummy-api
 WORKDIR /go/src/go-dummy-api
 
-COPY ./Gopkg.toml ./Gopkg.lock /go/src/go-dummy-api/
-RUN dep ensure -vendor-only
+COPY ./go.mod ./go.sum /go/src/go-dummy-api/
+RUN go mod tidy
 
-COPY . /go/src/go-dummy-api/
+COPY ./main.go /go/src/go-dummy-api/
 
 RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o bin/go-dummy-api \
   && cp bin/go-dummy-api /usr/local/bin/go-dummy-api \
