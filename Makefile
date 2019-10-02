@@ -1,4 +1,4 @@
-APP := go-dummy-api
+APP := nukegara
 
 .PHONY: build
 build:

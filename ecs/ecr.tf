@@ -1,9 +1,9 @@
-resource "aws_ecr_repository" "dummy_api" {
+resource "aws_ecr_repository" "nukegara" {
   name = "${var.svc_name}"
 }
 
-resource "aws_ecr_lifecycle_policy" "dummy_api" {
-  repository = aws_ecr_repository.dummy_api.name
+resource "aws_ecr_lifecycle_policy" "nukegara" {
+  repository = aws_ecr_repository.nukegara.name
 
   policy = <<EOF
 {

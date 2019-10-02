@@ -1,7 +1,7 @@
 version: '3.4'
 services:
-  web:
-    container_name: go-dummy-api
+  app:
+    container_name: nukegara
     build:
       context: .
       dockerfile: Dockerfile

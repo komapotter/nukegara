@@ -1,4 +1,4 @@
-module github.com/komapotter/go-dummy-api
+module github.com/komapotter/nukegara
 
 go 1.13
 

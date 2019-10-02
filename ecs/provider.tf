@@ -8,7 +8,7 @@ terraform {
 
   backend "s3" {
     bucket  = "36rafts-tfstate"
-    key     = "dummy-api/terraform.tfstate"
+    key     = "nukegara/terraform.tfstate"
     region  = "ap-northeast-1"
     encrypt = true
   }

@@ -1,4 +1,4 @@
-resource "aws_cloudwatch_log_group" "dummy_api" {
+resource "aws_cloudwatch_log_group" "nukegara" {
   name = "${var.svc_name}-cluster"
 
   tags = {

@@ -1,4 +1,4 @@
-resource "aws_lb" "dummy_api" {
+resource "aws_lb" "nukegara" {
   name                       = "${var.svc_name}-alb"
   load_balancer_type         = "application"
   internal                   = false
@@ -16,7 +16,7 @@ resource "aws_lb" "dummy_api" {
 }
 
 resource "aws_lb_listener" "https" {
-  load_balancer_arn = aws_lb.dummy_api.arn
+  load_balancer_arn = aws_lb.nukegara.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
@@ -33,13 +33,13 @@ resource "aws_lb_listener" "https" {
   }
 }
 
-resource "aws_lb_listener_rule" "dummy_api" {
+resource "aws_lb_listener_rule" "nukegara" {
   listener_arn = aws_lb_listener.https.arn
   priority     = 100
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.dummy_api.arn
+    target_group_arn = aws_lb_target_group.nukegara.arn
   }
 
   condition {
@@ -48,7 +48,7 @@ resource "aws_lb_listener_rule" "dummy_api" {
   }
 }
 
-resource "aws_lb_target_group" "dummy_api" {
+resource "aws_lb_target_group" "nukegara" {
   name                 = "${var.svc_name}-tg"
   vpc_id               = aws_default_vpc.default.id
   target_type          = "ip"
@@ -67,5 +67,5 @@ resource "aws_lb_target_group" "dummy_api" {
     protocol            = "HTTP"
   }
 
-  depends_on = [aws_lb.dummy_api]
+  depends_on = [aws_lb.nukegara]
 }

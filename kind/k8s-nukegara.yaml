@@ -1,30 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: go-dummy-api-server
+  name: nukegara-server
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: go-dummy-api-server
+      app: nukegara-server
   template:
     metadata:
       labels:
-        app: go-dummy-api-server
+        app: nukegara-server
     spec:
       containers:
-      - name: go-dummy-api-server
-        image: 36rafts/go-dummy-api:latest
+      - name: nukegara-server
+        image: 36rafts/nukegara:latest
         ports:
         - containerPort: 1323
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: go-dummy-api-server
+  name: nukegara-server
 spec:
   selector:
-    app: go-dummy-api-server
+    app: nukegara-server
   ports:
   - protocol: TCP
     port: 3000
