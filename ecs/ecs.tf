@@ -34,7 +34,7 @@ resource "aws_ecs_service" "nukegara" {
   launch_type                       = "FARGATE"
   platform_version                  = "LATEST"
   scheduling_strategy               = "REPLICA"
-  health_check_grace_period_seconds = 60
+#  health_check_grace_period_seconds = 60
 
   network_configuration {
     assign_public_ip = true
@@ -50,11 +50,11 @@ resource "aws_ecs_service" "nukegara" {
     type = "ECS"
   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.nukegara.arn
-    container_name   = "app"
-    container_port   = 1323
-  }
+#  load_balancer {
+#    target_group_arn = aws_lb_target_group.nukegara.arn
+#    container_name   = "app"
+#    container_port   = 1323
+#  }
 
   lifecycle {
     ignore_changes = [desired_count]
