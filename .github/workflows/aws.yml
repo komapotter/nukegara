@@ -81,13 +81,14 @@ jobs:
         # be deployed to ECS.
         docker build --target=builder --cache-from build -t build .
         docker build --target=runner --cache-from build --cache-from deploy -t deploy:latest -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker images
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
     - name: Save Image
       run: |
-        mkdir images
+        mkdir images | true
         docker save build:latest | gzip > images/build.tgz
         docker save deploy:latest | gzip > images/deploy.tgz
 
