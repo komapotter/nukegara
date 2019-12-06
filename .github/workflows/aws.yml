@@ -69,6 +69,7 @@ jobs:
         docker build --target=builder --cache-from $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER -t $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER:latest .
         echo "building $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER"
         docker build --target=runner --cache-from $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER -t $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:latest -t $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:$IMAGE_TAG .
+        docker images
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:$IMAGE_TAG"
