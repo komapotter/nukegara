@@ -58,11 +58,12 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY_BUILDER: nukegara-builder
         ECR_REPOSITORY_RUNNER: nukegara
-        IMAGE_TAG: ${{ github.sha }}
+        IMAGE_TAG_LONG: ${{ github.sha }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
+        IMAGE_TAG=$(echo $IMAGE_TAG_LONG | cut -c 1-7)
         echo "pulling $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER"
         docker pull $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER:latest || true
         echo "pulling $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER"
