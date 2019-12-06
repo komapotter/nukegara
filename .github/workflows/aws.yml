@@ -63,8 +63,9 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
+        set +o pipefail
         echo "pulling $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER"
-        docker pull $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER:latest
+        docker pull $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER:latest | true
         echo "pulling $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER"
         docker pull $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:latest
         echo "building $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER"
