@@ -64,6 +64,7 @@ jobs:
     - name: Load Image
       if: steps.cache-image.outputs.cache-hit == 'true'
       run: |
+        ls -l images
         gunzip images/*.tgz | true
         docker load -i images/build.tar | true
         docker load -i images/deploy.tar | true
