@@ -52,6 +52,22 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
+    - name: Cache builder images
+      id: cache-image
+      uses: actions/cache@v1
+      with:
+        path: images
+        key: ${{ runner.OS }}-images-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.OS }}-images-
+
+    - name: Load Image
+      if: steps.cache-image.outputs.cache-hit == 'true'
+      run: |
+        gunzip images/*.tgz | true
+        docker load -i images/build.tar | true
+        docker load -i images/deploy.tar | true
+
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
@@ -62,11 +78,17 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker pull $ECR_REGISTRY/$ECR_REPOSITORY:latest || true
-        docker build --cache-from $ECR_REGISTRY/$ECR_REPOSITORY:latest -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build --target=builder --cache-from build -t build .
+        docker build --target=runner --cache-from build --cache-from deploy -t deploy:latest -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+    - name: Save Image
+      run: |
+        mkdir images
+        docker save build:latest | gzip > images/build.tgz
+        docker save deploy:latest | gzip > images/deploy.tgz
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
