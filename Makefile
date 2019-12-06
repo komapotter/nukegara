@@ -18,7 +18,7 @@ docker-build:
 
 .PHONY: docker-start
 docker-start:
-	@docker-compose up -d
+	@docker-compose up
 
 .PHONY: docker-stop
 docker-stop:

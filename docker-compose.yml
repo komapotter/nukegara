@@ -1,9 +1,23 @@
 version: '3.4'
 services:
-  app:
-    container_name: nukegara
+  app1:
+    container_name: nukegara1
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "80:1323"
+      - "3000:1323"
+  app2:
+    container_name: nukegara2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:1323"
+  app3:
+    container_name: nukegara3
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3002:1323"
