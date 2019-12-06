@@ -64,9 +64,9 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         echo "pulling $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER"
-        docker pull $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER:latest | true
+        docker pull $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER:latest || true
         echo "pulling $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER"
-        docker pull $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:latest
+        docker pull $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:latest || true
         echo "building $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER"
         docker build --target=builder --cache-from $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER -t $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER:latest .
         echo "building $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER"
