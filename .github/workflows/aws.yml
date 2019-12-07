@@ -79,18 +79,18 @@ jobs:
     - name: setup tool
       id: setup-tool
       run: |
-        curl -fsSL -o /usr/local/bin/ecspresso https://github.com/kayac/ecspresso/releases/download/v0.13.3/ecspresso-v0.13.3-linux-amd64
-        chmod +x /usr/local/bin/ecspresso
+        curl -fsSL -o ecspresso https://github.com/kayac/ecspresso/releases/download/v0.13.3/ecspresso-v0.13.3-linux-amd64
+        chmod +x ecspresso
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: run-task
       run: |
-        /usr/local/bin/ecspresso run --config ecspresso/config.yaml --task-def=ecspresso/ecs-run-task.json 
+        ecspresso run --config ecspresso/config.yaml --task-def=ecspresso/ecs-run-task.json 
 
     - name: Deploy Amazon ECS task definition
       id: deploy-service
       env:
         IMAGE_TAG: ${{ steps.build-image.outputs.image_tag }}
       run: |
-        /usr/local/bin/ecspresso deploy --config ecspresso/config.yaml
+        ecspresso deploy --config ecspresso/config.yaml
 
