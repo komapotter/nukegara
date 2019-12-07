@@ -98,7 +98,7 @@ jobs:
         cd ecspresso && /tmp/ecspresso deploy --config config.yaml
 
     - name: Job Result
-    - uses: 8398a7/action-slack@v2
+      uses: 8398a7/action-slack@v2
       if: always()
       with:
         status: ${{ job.status }}
