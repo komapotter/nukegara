@@ -41,6 +41,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
+    - name: setup tool
+      id: setup-tool
+      run: |
+        pwd
+        curl -fsSL -o ecspresso https://github.com/kayac/ecspresso/releases/download/v0.13.3/ecspresso-v0.13.3-linux-amd64
+        chmod +x ecspresso
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -75,12 +82,6 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER
         echo "::set-output name=image_tag::$IMAGE_TAG"
-
-    - name: setup tool
-      id: setup-tool
-      run: |
-        curl -fsSL -o ecspresso https://github.com/kayac/ecspresso/releases/download/v0.13.3/ecspresso-v0.13.3-linux-amd64
-        chmod +x ecspresso
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: run-task
