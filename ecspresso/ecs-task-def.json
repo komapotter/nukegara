@@ -11,7 +11,7 @@
         "options": {
           "awslogs-group": "nukegara-cluster",
           "awslogs-region": "ap-northeast-1",
-          "awslogs-stream-prefix": "admin"
+          "awslogs-stream-prefix": "app"
         }
       },
       "memoryReservation": 300,
