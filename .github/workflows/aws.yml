@@ -85,6 +85,8 @@ jobs:
 
     - name: Run ECS Task
       id: run-task
+      env:
+        IMAGE_TAG: ${{ steps.build-image.outputs.image_tag }}
       run: |
         cd ecspresso && /tmp/ecspresso run --config config.yaml --task-def=ecs-run-task.json 
 
