@@ -97,3 +97,13 @@ jobs:
       run: |
         cd ecspresso && /tmp/ecspresso deploy --config config.yaml
 
+    - name: Slack Notification
+      uses: rtCamp/action-slack-notify@master
+      env:
+        SLACK_CHANNEL: deploy
+        SLACK_COLOR: '#3278BD'
+        SLACK_ICON: https://github.com/komapotter.png?size=48
+        SLACK_MESSAGE: 'Deploy Complete :smile:'
+        SLACK_TITLE: Deploy
+        SLACK_USERNAME: nukegara
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
