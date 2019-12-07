@@ -83,15 +83,15 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER
         echo "::set-output name=image_tag::$IMAGE_TAG"
 
-    - name: Fill in the new image ID in the Amazon ECS task definition
+    - name: Run ECS Task
       id: run-task
       run: |
-        /tmp/ecspresso run --config ecspresso/config.yaml --task-def=ecspresso/ecs-run-task.json 
+        cd ecspresso && /tmp/ecspresso run --config config.yaml --task-def=ecs-run-task.json 
 
-    - name: Deploy Amazon ECS task definition
+    - name: Deploy ECS Service
       id: deploy-service
       env:
         IMAGE_TAG: ${{ steps.build-image.outputs.image_tag }}
       run: |
-        /tmp/ecspresso deploy --config ecspresso/config.yaml
+        cd ecspresso && /tmp/ecspresso deploy --config config.yaml
 
