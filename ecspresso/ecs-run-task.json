@@ -1,11 +1,11 @@
 {
   "containerDefinitions": [
     {
-      "command": [],
+      "command": ["ls", "-l"],
       "cpu": 0,
       "environment": [],
       "essential": true,
-      "image": "350033177239.dkr.ecr.ap-northeast-1.amazonaws.com/nukegara:{{ must_env `IMAGE_TAG` }}",
+      "image": "350033177239.dkr.ecr.ap-northeast-1.amazonaws.com/nukegara:latest",
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -30,7 +30,7 @@
   ],
   "cpu": "256",
   "executionRoleArn": "arn:aws:iam::350033177239:role/ecs_task_execution_role-nukegara",
-  "family": "nukegara",
+  "family": "nukegara-run",
   "memory": "512",
   "networkMode": "awsvpc",
   "placementConstraints": [],

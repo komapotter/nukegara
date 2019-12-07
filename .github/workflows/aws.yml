@@ -74,20 +74,23 @@ jobs:
         docker build --target=runner --cache-from $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER --cache-from $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER -t $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:latest -t $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER
-        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:$IMAGE_TAG"
+        echo "::set-output name=image_tag::$IMAGE_TAG"
+
+    - name: setup tool
+      id: setup-tool
+      run: |
+        curl -fsSL -o /usr/local/bin/ecspresso https://github.com/kayac/ecspresso/releases/download/v0.13.3/ecspresso-v0.13.3-linux-amd64
+        chmod +x /usr/local/bin/ecspresso
 
     - name: Fill in the new image ID in the Amazon ECS task definition
-      id: task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: ecspresso/ecs-task-def.json
-        container-name: app
-        image: ${{ steps.build-image.outputs.image }}
+      id: run-task
+      run: |
+        /usr/local/bin/ecspresso run --config ecspresso/config.yaml --task-def=ecspresso/ecs-run-task.json 
 
     - name: Deploy Amazon ECS task definition
-      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-      with:
-        task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: nukegara
-        cluster: nukegara-cluster
-        wait-for-service-stability: true
+      id: deploy-service
+      env:
+        IMAGE_TAG: ${{ steps.build-image.outputs.image_tag }}
+      run: |
+        /usr/local/bin/ecspresso deploy --config ecspresso/config.yaml
+
