@@ -45,8 +45,8 @@ jobs:
       id: setup-tool
       run: |
         pwd
-        curl -L -o ecspresso https://github.com/kayac/ecspresso/releases/download/v0.13.3/ecspresso-v0.13.3-linux-amd64
-        chmod +x ecspresso
+        curl -L -o /tmp/ecspresso https://github.com/kayac/ecspresso/releases/download/v0.13.3/ecspresso-v0.13.3-linux-amd64
+        chmod +x /tmp/ecspresso
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -86,12 +86,12 @@ jobs:
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: run-task
       run: |
-        ecspresso run --config ecspresso/config.yaml --task-def=ecspresso/ecs-run-task.json 
+        /tmp/ecspresso run --config ecspresso/config.yaml --task-def=ecspresso/ecs-run-task.json 
 
     - name: Deploy Amazon ECS task definition
       id: deploy-service
       env:
         IMAGE_TAG: ${{ steps.build-image.outputs.image_tag }}
       run: |
-        ecspresso deploy --config ecspresso/config.yaml
+        /tmp/ecspresso deploy --config ecspresso/config.yaml
 
