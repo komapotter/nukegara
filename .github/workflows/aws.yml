@@ -109,4 +109,5 @@ jobs:
         icon_url: https://github.com/komapotter.png?size=48
         channel: '#deploy'
       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
