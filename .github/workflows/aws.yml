@@ -102,11 +102,10 @@ jobs:
       if: always()
       with:
         status: ${{ job.status }}
-        author_name: Deploy
-        text: Deploy Result
-        mention: here
+        mention: ''
+        only_mention_fail: here
         username: nukegara
-        icon_url: https://github.com/komapotter.png?size=48
+        icon_url: 'https://github.com/komapotter.png?size=48'
         channel: '#deploy'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
