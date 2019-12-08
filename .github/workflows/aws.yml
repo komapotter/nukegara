@@ -101,9 +101,7 @@ jobs:
       uses: 8398a7/action-slack@v2
       if: always()
       with:
-        status: ${{ job.status }}
-        mention: ''
-        only_mention_fail: here
+        type: ${{ job.status }}
         username: nukegara
         icon_url: 'https://github.com/komapotter.png?size=48'
         channel: '#deploy'
