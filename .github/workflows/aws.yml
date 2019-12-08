@@ -101,9 +101,11 @@ jobs:
       uses: 8398a7/action-slack@v2
       if: always()
       with:
-        type: ${{ job.status }}
+        status: ${{ job.status }}
+        mention: ''
+        only_mention_fail: here
         username: nukegara
-        icon_url: 'https://github.com/komapotter.png?size=48'
+        icon_emoji: ':octocat:'
         channel: '#deploy'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
