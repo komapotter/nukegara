@@ -70,18 +70,18 @@ resource "aws_ecs_service" "nukegara" {
 
 
 ### ECS/EC2
-resource "aws_ecs_cluster" "nukegara_ec2" {
-  name               = "${var.svc_name}-ec2-cluster"
-  capacity_providers = ["nukegara_ec2"]
-  default_capacity_provider_strategy {
-    capacity_provider = "nukegara_ec2"
-    weight            = "100"
-  }
-  setting {
-    name  = "containerInsights"
-    value = "enabled"
-  }
-}
+#resource "aws_ecs_cluster" "nukegara_ec2" {
+#  name               = "${var.svc_name}-ec2-cluster"
+##  capacity_providers = ["nukegara_ec2_cp"]
+##  default_capacity_provider_strategy {
+##    capacity_provider = "nukegara_ec2_cp"
+##    weight            = "100"
+##  }
+#  setting {
+#    name  = "containerInsights"
+#    value = "enabled"
+#  }
+#}
 
 data "aws_ecs_task_definition" "nukegara_ec2" {
   task_definition = aws_ecs_task_definition.nukegara_ec2.family
@@ -110,55 +110,55 @@ resource "aws_ecs_task_definition" "nukegara_ec2" {
 
 }
 
-resource "aws_ecs_service" "nukegara_ec2" {
-  name                = "${var.svc_name}-ec2"
-  cluster             = aws_ecs_cluster.nukegara_ec2.arn
-  task_definition     = "${aws_ecs_task_definition.nukegara_ec2.family}:${max(aws_ecs_task_definition.nukegara_ec2.revision, data.aws_ecs_task_definition.nukegara_ec2.revision)}"
-  desired_count       = 0
-  launch_type         = "EC2"
-  scheduling_strategy = "REPLICA"
-  #  health_check_grace_period_seconds = 30
+#resource "aws_ecs_service" "nukegara_ec2" {
+#  name                = "${var.svc_name}-ec2"
+#  cluster             = aws_ecs_cluster.nukegara_ec2.arn
+#  task_definition     = "${aws_ecs_task_definition.nukegara_ec2.family}:${max(aws_ecs_task_definition.nukegara_ec2.revision, data.aws_ecs_task_definition.nukegara_ec2.revision)}"
+#  desired_count       = 0
+#  launch_type         = "EC2"
+#  scheduling_strategy = "REPLICA"
+#  #  health_check_grace_period_seconds = 30
+#
+#  network_configuration {
+#    assign_public_ip = false
+#    security_groups = [
+#      aws_security_group.ecs_instance_sg.id,
+#      aws_security_group.ecs_service_sg.id,
+#    ]
+#
+#    subnets = [
+#      aws_default_subnet.default_a.id,
+#      aws_default_subnet.default_c.id,
+#    ]
+#  }
+#
+#  deployment_controller {
+#    type = "ECS"
+#  }
+#
+#  #  load_balancer {
+#  #    target_group_arn = aws_lb_target_group.nukegara.arn
+#  #    container_name   = "app"
+#  #    container_port   = 1323
+#  #  }
+#
+#  lifecycle {
+#    ignore_changes = [desired_count]
+#  }
+#}
 
-  network_configuration {
-    assign_public_ip = false
-    security_groups = [
-      aws_security_group.ecs_instance_sg.id,
-      aws_security_group.ecs_service_sg.id,
-    ]
-
-    subnets = [
-      aws_default_subnet.default_a.id,
-      aws_default_subnet.default_c.id,
-    ]
-  }
-
-  deployment_controller {
-    type = "ECS"
-  }
-
-  #  load_balancer {
-  #    target_group_arn = aws_lb_target_group.nukegara.arn
-  #    container_name   = "app"
-  #    container_port   = 1323
-  #  }
-
-  lifecycle {
-    ignore_changes = [desired_count]
-  }
-}
-
-resource "aws_ecs_capacity_provider" "nukegara_ec2" {
-  name = "nukegara_ec2"
-
-  auto_scaling_group_provider {
-    auto_scaling_group_arn         = aws_autoscaling_group.nukegara.arn
-    managed_termination_protection = "ENABLED"
-
-    managed_scaling {
-      maximum_scaling_step_size = 1
-      minimum_scaling_step_size = 1
-      status                    = "ENABLED"
-      target_capacity           = 1
-    }
-  }
-}
+#resource "aws_ecs_capacity_provider" "nukegara_ec2" {
+#  name = "nukegara_ec2_cp"
+#
+#  auto_scaling_group_provider {
+#    auto_scaling_group_arn         = aws_autoscaling_group.nukegara.arn
+#    managed_termination_protection = "ENABLED"
+#
+#    managed_scaling {
+#      maximum_scaling_step_size = 1
+#      minimum_scaling_step_size = 1
+#      status                    = "ENABLED"
+#      target_capacity           = 1
+#    }
+#  }
+#}
