@@ -1,0 +1,33 @@
+[
+  {
+    "name": "app",
+    "image": "${app_image_repo}",
+    "cpu": 0,
+    "memoryReservation": 300,
+    "essential": true,
+    "portMappings": [
+      {
+        "protocol": "tcp",
+        "hostPort": 1323,
+        "containerPort": 1323
+      }
+    ],
+    "mountPoints": [
+      {
+        "containerPath": "/var/www/my-vol",
+        "sourceVolume": "my-vol"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${log_region}",
+        "awslogs-stream-prefix": "${log_stream_prefix}"
+      }
+    },
+    "command": [],
+    "environment": [],
+    "secrets": []
+  }
+]

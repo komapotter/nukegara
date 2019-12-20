@@ -2,7 +2,7 @@
 resource "aws_security_group" "ecs_instance_sg" {
   name        = "${var.svc_name}_ecs_instance_sg"
   description = "Allow inbound traffic for ECS instance"
-  vpc_id               = aws_default_vpc.default.id
+  vpc_id      = aws_default_vpc.default.id
 
   egress {
     from_port   = 0
@@ -16,7 +16,7 @@ resource "aws_security_group" "ecs_instance_sg" {
 resource "aws_security_group" "ecs_service_sg" {
   name        = "${var.svc_name}_ecs_service_sg"
   description = "Allow inbound traffic for ECS service"
-  vpc_id               = aws_default_vpc.default.id
+  vpc_id      = aws_default_vpc.default.id
 
   ingress {
     from_port       = 0
@@ -37,7 +37,7 @@ resource "aws_security_group" "ecs_service_sg" {
 resource "aws_security_group" "alb_sg" {
   name        = "${var.svc_name}_alb_sg"
   description = "Allow inbound traffic for ALB"
-  vpc_id               = aws_default_vpc.default.id
+  vpc_id      = aws_default_vpc.default.id
 
   ingress {
     from_port   = 443
