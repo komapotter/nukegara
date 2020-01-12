@@ -1,3 +1,121 @@
+data "aws_caller_identity" "current" {}
+
+resource "aws_vpc" "main" {
+  cidr_block           = var.cidr_block
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "koma-vpc"
+  }
+}
+
+# public
+resource "aws_subnet" "public" {
+  availability_zone = "${var.aws_region}a"
+  cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, 1)
+  vpc_id            = aws_vpc.main.id
+
+  tags = {
+    Name = "koma-public"
+  }
+}
+
+# private
+resource "aws_subnet" "private" {
+  availability_zone = "${var.aws_region}a"
+  cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, 2)
+  vpc_id            = aws_vpc.main.id
+
+  tags = {
+    Name = "koma-private"
+  }
+}
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "koma-igw"
+  }
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+  tags = {
+    Name = "koma-public-rt"
+  }
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "koma-private-rt"
+  }
+}
+
+resource "aws_route_table_association" "public" {
+  route_table_id = aws_route_table.public.id
+  subnet_id      = aws_subnet.public.id
+}
+
+resource "aws_route_table_association" "private" {
+  route_table_id = aws_route_table.private.id
+  subnet_id      = aws_subnet.private.id
+}
+
+
+#resource "aws_vpc_endpoint" "s3" {
+#  vpc_id            = aws_vpc.main.id
+#  service_name      = "com.amazonaws.ap-northeast-1.s3"
+#  vpc_endpoint_type = "Gateway"
+#}
+#
+#resource "aws_vpc_endpoint_route_table_association" "private_s3" {
+#  vpc_endpoint_id = aws_vpc_endpoint.s3.id
+#  route_table_id  = aws_route_table.private.id
+#}
+#
+#resource "aws_vpc_endpoint" "ecr" {
+#  vpc_id            = aws_vpc.main.id
+#  service_name      = "com.amazonaws.ap-northeast-1.ecr.dkr"
+#  vpc_endpoint_type = "Interface"
+#
+#  security_group_ids = [
+#    aws_security_group.vpc_endpoint_sg.id,
+#  ]
+#
+#  subnet_ids = [
+#    aws_subnet.private.id,
+#  ]
+#
+#  private_dns_enabled = true
+#}
+#
+#resource "aws_vpc_endpoint" "cwl" {
+#  vpc_id            = aws_vpc.main.id
+#  service_name      = "com.amazonaws.ap-northeast-1.logs"
+#  vpc_endpoint_type = "Interface"
+#
+#  security_group_ids = [
+#    aws_security_group.vpc_endpoint_sg.id,
+#  ]
+#
+#  subnet_ids = [
+#    aws_subnet.private.id,
+#  ]
+#
+#  private_dns_enabled = true
+#}
+
+
+### defalut network
 resource "aws_default_vpc" "default" {
   tags = {
     Name = "Default VPC"

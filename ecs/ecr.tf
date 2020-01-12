@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "nukegara" {
-  name = "${var.svc_name}"
+  name = var.svc_name
 }
 
 resource "aws_ecr_lifecycle_policy" "nukegara" {

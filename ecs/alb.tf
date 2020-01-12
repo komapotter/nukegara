@@ -6,8 +6,7 @@
 #  enable_deletion_protection = true
 #
 #  subnets = [
-#    aws_default_subnet.default_a.id,
-#    aws_default_subnet.default_c.id,
+#    aws_subnet.public.id,
 #  ]
 #
 #  security_groups = [
@@ -50,7 +49,7 @@
 #
 #resource "aws_lb_target_group" "nukegara" {
 #  name                 = "${var.svc_name}-tg"
-#  vpc_id               = aws_default_vpc.default.id
+#  vpc_id               = aws_vpc.main.id
 #  target_type          = "ip"
 #  port                 = 80
 #  protocol             = "HTTP"

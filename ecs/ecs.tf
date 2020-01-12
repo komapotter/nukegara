@@ -42,14 +42,13 @@ resource "aws_ecs_service" "nukegara" {
   #  health_check_grace_period_seconds = 60
 
   network_configuration {
-    assign_public_ip = true
+    assign_public_ip = false
     security_groups = [
       aws_security_group.ecs_service_sg.id,
     ]
 
     subnets = [
-      aws_default_subnet.default_a.id,
-      aws_default_subnet.default_c.id,
+      aws_subnet.private.id,
     ]
   }
 
@@ -127,8 +126,7 @@ resource "aws_ecs_task_definition" "nukegara_ec2" {
 #    ]
 #
 #    subnets = [
-#      aws_default_subnet.default_a.id,
-#      aws_default_subnet.default_c.id,
+#      aws_subnet.private.id,
 #    ]
 #  }
 #

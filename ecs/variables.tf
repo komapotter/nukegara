@@ -1,4 +1,5 @@
 variable "aws_region" {}
+variable "cidr_block" {}
 variable "svc_name" {}
 variable "acm_domain" {}
 variable "app_domain" {
