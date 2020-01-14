@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.7'
 services:
   app1:
     container_name: nukegara1
@@ -7,17 +7,39 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:1323"
-  app2:
-    container_name: nukegara2
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3001:1323"
-  app3:
-    container_name: nukegara3
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3002:1323"
+    environment:
+      DD_AGENT_HOST: dd-agent
+      DD_TRACE_AGENT_PORT: 8126 
+    links:
+      - dd-agent
+    depends_on:
+      - dd-agent
+
+  dd-agent:
+    container_name: dd-agent
+    image: datadog/agent:latest
+    environment:
+     - DD_API_KEY=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+     - DD_APM_ENABLED=true
+    volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+     - /proc/:/host/proc/:ro
+     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+    logging:
+      driver: 'none'
+
+#  app2:
+#    container_name: nukegara2
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3001:1323"
+#  app3:
+#    container_name: nukegara3
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "3002:1323"
+
