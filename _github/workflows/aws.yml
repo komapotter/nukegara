@@ -102,7 +102,7 @@ jobs:
       id: setup-tool
       run: |
         pwd
-        curl -L -o /tmp/ecspresso https://github.com/kayac/ecspresso/releases/download/v0.13.3/ecspresso-v0.13.3-linux-amd64
+        curl -L -o /tmp/ecspresso https://github.com/kayac/ecspresso/releases/download/v0.15.3/ecspresso-v0.15.3-linux-amd64
         chmod +x /tmp/ecspresso
 
     - name: Configure AWS credentials

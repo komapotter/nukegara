@@ -68,9 +68,9 @@ resource "aws_security_group" "vpc_endpoint_sg" {
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    from_port       = 0
-    to_port         = 65535
-    protocol        = "tcp"
+    from_port = 0
+    to_port   = 65535
+    protocol  = "tcp"
     security_groups = [
       aws_security_group.ecs_instance_sg.id,
       aws_security_group.ecs_service_sg.id,

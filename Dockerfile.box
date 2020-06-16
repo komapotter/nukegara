@@ -1,0 +1,6 @@
+FROM golang:1.13.3
+
+RUN mkdir -p /go/src/nukegara
+WORKDIR /go/src/nukegara
+
+COPY ./main.go ./go.mod ./go.sum /go/src/nukegara/
