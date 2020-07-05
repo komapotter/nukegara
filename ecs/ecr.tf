@@ -10,12 +10,11 @@ resource "aws_ecr_lifecycle_policy" "nukegara" {
   "rules": [
     {
       "rulePriority": 1,
-      "description": "Expire images more than 20",
+      "description": "Expire images more than 5",
       "selection": {
-        "tagStatus": "tagged",
-        "tagPrefixList": ["created"],
+        "tagStatus": "any",
         "countType": "imageCountMoreThan",
-        "countNumber": 20
+        "countNumber": 5
       },
       "action": {
         "type": "expire"
