@@ -63,7 +63,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        IMAGE_TAG=$(echo $IMAGE_TAG_LONG | cut -c 1-7)
+        IMAGE_TAG=created-$(echo $IMAGE_TAG_LONG | cut -c 1-7)
         echo "pulling $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER"
         docker pull $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER:latest || true
         echo "pulling $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER"
