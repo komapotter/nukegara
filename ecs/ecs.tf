@@ -54,12 +54,12 @@ resource "aws_ecs_service" "nukegara" {
   }
 
   deployment_controller {
-    type = "ECS"
-    #    type = "CODE_DEPLOY"
+    #type = "ECS"
+    type = "CODE_DEPLOY"
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.nukegara.arn
+    target_group_arn = aws_lb_target_group.nukegara_foo.arn
     container_name   = "app"
     container_port   = 1323
   }

@@ -24,7 +24,7 @@ resource "aws_lb_listener" "https" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.nukegara.arn
+    target_group_arn = aws_lb_target_group.nukegara_foo.arn
   }
 
   #  default_action {
@@ -53,8 +53,30 @@ resource "aws_lb_listener" "https" {
 #  }
 #}
 
-resource "aws_lb_target_group" "nukegara" {
-  name                 = "${var.svc_name}-tg"
+#resource "aws_lb_target_group" "nukegara" {
+#  name                 = "${var.svc_name}-tg"
+#  vpc_id               = aws_vpc.main.id
+#  target_type          = "ip"
+#  port                 = 1323
+#  protocol             = "HTTP"
+#  deregistration_delay = 10
+#
+#  health_check {
+#    path                = "/"
+#    healthy_threshold   = 5
+#    unhealthy_threshold = 2
+#    timeout             = 5
+#    interval            = 30
+#    matcher             = 200
+#    port                = "traffic-port"
+#    protocol            = "HTTP"
+#  }
+#
+#  depends_on = [aws_lb.nukegara]
+#}
+
+resource "aws_lb_target_group" "nukegara_foo" {
+  name                 = "${var.svc_name}-foo-tg"
   vpc_id               = aws_vpc.main.id
   target_type          = "ip"
   port                 = 1323
@@ -68,53 +90,31 @@ resource "aws_lb_target_group" "nukegara" {
     timeout             = 5
     interval            = 30
     matcher             = 200
-    port                = "traffic-port"
+    port                = 1323
     protocol            = "HTTP"
   }
 
   depends_on = [aws_lb.nukegara]
 }
 
-#resource "aws_lb_target_group" "nukegara_blue" {
-#  name                 = "${var.svc_name}-blue-tg"
-#  vpc_id               = aws_vpc.main.id
-#  target_type          = "ip"
-#  port                 = 1323
-#  protocol             = "HTTP"
-#  deregistration_delay = 10
-#
-#  health_check {
-#    path                = "/"
-#    healthy_threshold   = 5
-#    unhealthy_threshold = 2
-#    timeout             = 5
-#    interval            = 30
-#    matcher             = 200
-#    port                = 1323
-#    protocol            = "HTTP"
-#  }
-#
-#  depends_on = [aws_lb.nukegara]
-#}
-#
-#resource "aws_lb_target_group" "nukegara_green" {
-#  name                 = "${var.svc_name}-green-tg"
-#  vpc_id               = aws_vpc.main.id
-#  target_type          = "ip"
-#  port                 = 1323
-#  protocol             = "HTTP"
-#  deregistration_delay = 10
-#
-#  health_check {
-#    path                = "/"
-#    healthy_threshold   = 5
-#    unhealthy_threshold = 2
-#    timeout             = 5
-#    interval            = 30
-#    matcher             = 200
-#    port                = 1323
-#    protocol            = "HTTP"
-#  }
-#
-#  depends_on = [aws_lb.nukegara]
-#}
+resource "aws_lb_target_group" "nukegara_bar" {
+  name                 = "${var.svc_name}-bar-tg"
+  vpc_id               = aws_vpc.main.id
+  target_type          = "ip"
+  port                 = 1323
+  protocol             = "HTTP"
+  deregistration_delay = 10
+
+  health_check {
+    path                = "/"
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+    timeout             = 5
+    interval            = 30
+    matcher             = 200
+    port                = 1323
+    protocol            = "HTTP"
+  }
+
+  depends_on = [aws_lb.nukegara]
+}
