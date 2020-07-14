@@ -10,24 +10,44 @@ resource "aws_vpc" "main" {
 }
 
 # public
-resource "aws_subnet" "public" {
+resource "aws_subnet" "public_a" {
   availability_zone = "${var.aws_region}a"
   cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, 1)
   vpc_id            = aws_vpc.main.id
 
   tags = {
-    Name = "koma-public"
+    Name = "koma-public-a"
   }
 }
 
-# private
-resource "aws_subnet" "private" {
-  availability_zone = "${var.aws_region}a"
+resource "aws_subnet" "public_c" {
+  availability_zone = "${var.aws_region}c"
   cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, 2)
   vpc_id            = aws_vpc.main.id
 
   tags = {
-    Name = "koma-private"
+    Name = "koma-public-c"
+  }
+}
+
+# private
+resource "aws_subnet" "private_a" {
+  availability_zone = "${var.aws_region}a"
+  cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, 3)
+  vpc_id            = aws_vpc.main.id
+
+  tags = {
+    Name = "koma-private-a"
+  }
+}
+
+resource "aws_subnet" "private_c" {
+  availability_zone = "${var.aws_region}c"
+  cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, 4)
+  vpc_id            = aws_vpc.main.id
+
+  tags = {
+    Name = "koma-private-c"
   }
 }
 
@@ -60,16 +80,25 @@ resource "aws_route_table" "private" {
   }
 }
 
-resource "aws_route_table_association" "public" {
+resource "aws_route_table_association" "public_a" {
   route_table_id = aws_route_table.public.id
-  subnet_id      = aws_subnet.public.id
+  subnet_id      = aws_subnet.public_a.id
 }
 
-resource "aws_route_table_association" "private" {
+resource "aws_route_table_association" "public_c" {
+  route_table_id = aws_route_table.public.id
+  subnet_id      = aws_subnet.public_c.id
+}
+
+resource "aws_route_table_association" "private_a" {
   route_table_id = aws_route_table.private.id
-  subnet_id      = aws_subnet.private.id
+  subnet_id      = aws_subnet.private_a.id
 }
 
+resource "aws_route_table_association" "private_c" {
+  route_table_id = aws_route_table.private.id
+  subnet_id      = aws_subnet.private_c.id
+}
 
 #resource "aws_vpc_endpoint" "s3" {
 #  vpc_id            = aws_vpc.main.id
