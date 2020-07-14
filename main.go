@@ -29,7 +29,7 @@ func main() {
 	e.Use(echotrace.Middleware(echotrace.WithServiceName("my-web-app")))
 
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, Gopher World!")
+		return c.String(http.StatusOK, "Hello, Nukegara World!")
 	})
 	e.POST("/dummy-post", func(c echo.Context) error {
 		return c.String(http.StatusCreated, "Dummy Post Succeeded!")
