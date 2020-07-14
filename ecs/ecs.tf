@@ -31,43 +31,43 @@ resource "aws_ecs_task_definition" "nukegara" {
 
 }
 
-resource "aws_ecs_service" "nukegara" {
-  name                              = var.svc_name
-  cluster                           = aws_ecs_cluster.nukegara.arn
-  task_definition                   = "${aws_ecs_task_definition.nukegara.family}:${max(aws_ecs_task_definition.nukegara.revision, data.aws_ecs_task_definition.nukegara.revision)}"
-  desired_count                     = 0
-  launch_type                       = "FARGATE"
-  platform_version                  = "1.4.0"
-  scheduling_strategy               = "REPLICA"
-  health_check_grace_period_seconds = 60
-
-  network_configuration {
-    assign_public_ip = true
-    security_groups = [
-      aws_security_group.ecs_service_sg.id,
-    ]
-
-    subnets = [
-      aws_subnet.public_a.id,
-      aws_subnet.public_c.id,
-    ]
-  }
-
-  deployment_controller {
-    #type = "ECS"
-    type = "CODE_DEPLOY"
-  }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.nukegara_foo.arn
-    container_name   = "app"
-    container_port   = 1323
-  }
-
-  lifecycle {
-    ignore_changes = [desired_count, task_definition]
-  }
-}
+#resource "aws_ecs_service" "nukegara" {
+#  name                              = var.svc_name
+#  cluster                           = aws_ecs_cluster.nukegara.arn
+#  task_definition                   = "${aws_ecs_task_definition.nukegara.family}:${max(aws_ecs_task_definition.nukegara.revision, data.aws_ecs_task_definition.nukegara.revision)}"
+#  desired_count                     = 0
+#  launch_type                       = "FARGATE"
+#  platform_version                  = "1.4.0"
+#  scheduling_strategy               = "REPLICA"
+#  health_check_grace_period_seconds = 60
+#
+#  network_configuration {
+#    assign_public_ip = true
+#    security_groups = [
+#      aws_security_group.ecs_service_sg.id,
+#    ]
+#
+#    subnets = [
+#      aws_subnet.public_a.id,
+#      aws_subnet.public_c.id,
+#    ]
+#  }
+#
+#  deployment_controller {
+#    #type = "ECS"
+#    type = "CODE_DEPLOY"
+#  }
+#
+#  load_balancer {
+#    target_group_arn = aws_lb_target_group.nukegara_foo.arn
+#    container_name   = "app"
+#    container_port   = 1323
+#  }
+#
+#  lifecycle {
+#    ignore_changes = [desired_count, task_definition]
+#  }
+#}
 
 
 ### ECS/EC2
