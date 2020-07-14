@@ -81,16 +81,19 @@ jobs:
         echo "::set-output name=image_tag::$IMAGE_TAG"
 
     - name: Job Result
-      uses: 8398a7/action-slack@v2
+      uses: 8398a7/action-slack@v3
       if: always()
       with:
         status: ${{ job.status }}
+        fields: repo,message,commit,author,ref
         author_name: Build
-        only_mention_fail: here
+        mention: here
+        if_mention: failure,cancelled
         channel: '#deploy'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
 
   deploy:
     name: Deploy
@@ -131,12 +134,14 @@ jobs:
         cd ecspresso && /tmp/ecspresso deploy --config config.yaml --rollback-events DEPLOYMENT_FAILURE
 
     - name: Job Result
-      uses: 8398a7/action-slack@v2
+      uses: 8398a7/action-slack@v3
       if: always()
       with:
         status: ${{ job.status }}
+        fields: repo,message,commit,author,ref
         author_name: Deploy
-        only_mention_fail: here
+        mention: here
+        if_mention: failure,cancelled
         channel: '#deploy'
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
