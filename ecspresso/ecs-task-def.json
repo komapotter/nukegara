@@ -24,7 +24,6 @@
           "protocol": "tcp"
         }
       ],
-      "secrets": [],
       "volumesFrom": []
     }
   ],
