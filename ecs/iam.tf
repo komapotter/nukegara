@@ -182,6 +182,51 @@ resource "aws_iam_role_policy_attachment" "ecs_autoscale_role_attach" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceAutoscaleRole"
 }
 
+# Github Actions
+resource "aws_iam_user" "cicd" {
+  name = "github-actions"
+  path = "/system/"
+}
+
+resource "aws_iam_user_policy" "cicd" {
+  name = "github-actions-policy"
+  user = aws_iam_user.cicd.name
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "iam:PassRole"
+            ],
+            "Resource": "*",
+            "Effect": "Allow",
+            "Condition": {
+                "StringEqualsIfExists": {
+                    "iam:PassedToService": [
+                        "ec2.amazonaws.com",
+                        "ecs-tasks.amazonaws.com"
+                    ]
+                }
+            }
+        },
+        {
+            "Action": [
+                "ecs:*",
+                "ecr:*",
+                "s3:*",
+                "codedeploy:*"
+            ],
+            "Resource": "*",
+            "Effect": "Allow"
+        }
+    ]
+}
+EOF
+}
+
+# CodeDeploy
 resource "aws_iam_role" "codedeploy_role" {
   name = "codedeploy-role"
 
