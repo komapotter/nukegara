@@ -65,7 +65,7 @@ resource "aws_ecs_task_definition" "nukegara" {
 #  }
 #
 #  lifecycle {
-#    ignore_changes = [desired_count, task_definition]
+#    ignore_changes = [load_balancer, desired_count, task_definition]
 #  }
 #}
 
@@ -84,32 +84,32 @@ resource "aws_ecs_task_definition" "nukegara" {
 #  }
 #}
 
-data "aws_ecs_task_definition" "nukegara_ec2" {
-  task_definition = aws_ecs_task_definition.nukegara_ec2.family
-}
-
-resource "aws_ecs_task_definition" "nukegara_ec2" {
-  family                   = "${var.svc_name}-ec2"
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["EC2"]
-  task_role_arn            = aws_iam_role.ecs_task_role.arn
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-
-  container_definitions = templatefile("container_ec2_tpl.json",
-    {
-      app_image_repo = "${aws_ecr_repository.nukegara.repository_url}:latest"
-
-      log_group         = aws_cloudwatch_log_group.nukegara.name
-      log_region        = var.aws_region
-      log_stream_prefix = "ec2"
-  })
-
-  volume {
-    name      = "my-vol"
-    host_path = "/var/www/my-vol"
-  }
-
-}
+#data "aws_ecs_task_definition" "nukegara_ec2" {
+#  task_definition = aws_ecs_task_definition.nukegara_ec2.family
+#}
+#
+#resource "aws_ecs_task_definition" "nukegara_ec2" {
+#  family                   = "${var.svc_name}-ec2"
+#  network_mode             = "awsvpc"
+#  requires_compatibilities = ["EC2"]
+#  task_role_arn            = aws_iam_role.ecs_task_role.arn
+#  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+#
+#  container_definitions = templatefile("container_ec2_tpl.json",
+#    {
+#      app_image_repo = "${aws_ecr_repository.nukegara.repository_url}:latest"
+#
+#      log_group         = aws_cloudwatch_log_group.nukegara.name
+#      log_region        = var.aws_region
+#      log_stream_prefix = "ec2"
+#  })
+#
+#  volume {
+#    name      = "my-vol"
+#    host_path = "/var/www/my-vol"
+#  }
+#
+#}
 
 #resource "aws_ecs_service" "nukegara_ec2" {
 #  name                = "${var.svc_name}-ec2"

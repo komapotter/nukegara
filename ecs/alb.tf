@@ -15,6 +15,21 @@
 #  ]
 #}
 #
+#resource "aws_lb_listener" "http" {
+#  load_balancer_arn = aws_lb.nukegara.arn
+#  port              = "18080"
+#  protocol          = "HTTP"
+#
+#  default_action {
+#    type             = "forward"
+#    target_group_arn = aws_lb_target_group.nukegara_foo.arn
+#  }
+#
+#  lifecycle {
+#    ignore_changes = [default_action]
+#  }
+#}
+#
 #resource "aws_lb_listener" "https" {
 #  load_balancer_arn = aws_lb.nukegara.arn
 #  port              = "443"
@@ -36,6 +51,10 @@
 #  #      status_code  = "403"
 #  #    }
 #  #  }
+#
+#  lifecycle {
+#    ignore_changes = [default_action]
+#  }
 #}
 
 #resource "aws_lb_listener_rule" "nukegara" {
