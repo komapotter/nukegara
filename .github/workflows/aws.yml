@@ -133,7 +133,7 @@ jobs:
     - name: Overwrite task definisions
       id: overwrite-task-definitions
       run: |
-        echo ${{ steps.render-app-container.outputs.task-definition }} > ecs-task-def.json
+        cat ${{ steps.render-app-container.outputs.task-definition }} > ecs-task-def.json
         cat ecs-task-def.json
 
     - name: Deploy ECS Service
