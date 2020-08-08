@@ -17,8 +17,6 @@ jobs:
     name: Build
     runs-on: ubuntu-18.04
     timeout-minutes: 300
-    outputs:
-      image_url: ${{ steps.build-image.outputs.image_url }}
 
     steps:
     - name: Checkout
@@ -57,7 +55,13 @@ jobs:
         docker build --target=runner --cache-from $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER --cache-from $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER -t $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:latest -t $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER
-        echo "::set-output name=image_url::$ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:$IMAGE_TAG"
+        echo "$ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:$IMAGE_TAG" > image-url.txt
+
+    - name: Upload image url
+      uses: actions/upload-artifact@v2
+      with:
+        name: buildinfo
+        path: image-url.txt
 
     - name: Job Result
       uses: 8398a7/action-slack@v3
@@ -87,6 +91,18 @@ jobs:
         curl -L -o /tmp/ecspresso https://github.com/kayac/ecspresso/releases/download/${{ env.ECSPRESSO_VER }}/ecspresso-${{ env.ECSPRESSO_VER }}-linux-amd64
         chmod +x /tmp/ecspresso
 
+    - name: Download image url
+      uses: actions/download-artifact@v2
+      with:
+        name: buildinfo
+        path: buildinfo
+
+    - name: Build Information
+      id: build-info
+      run: |
+        export IMAGE_URL=`cat buildinfo/image-url.txt`
+        echo "::set-output name=image_url::${IMAGE_URL}"
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -112,7 +128,7 @@ jobs:
       with:
         task-definition: ecs-task-def.json
         container-name: app
-        image: ${{ needs.build.outputs.image_url }}
+        image: ${{ steps.build-info.outputs.image_url }}
 
     - name: Overwrite task definisions
       id: overwrite-task-definitions
