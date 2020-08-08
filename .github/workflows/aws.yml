@@ -1,29 +1,3 @@
-# This workflow will build and push a new container image to Amazon ECR,
-# and then will deploy a new task definition to Amazon ECS, on every push
-# to the master branch.
-#
-# To use this workflow, you will need to complete the following set-up steps:
-#
-# 1. Create an ECR repository to store your images.
-#    For example: `aws ecr create-repository --repository-name my-ecr-repo --region us-east-2`.
-#    Replace the value of `ECR_REPOSITORY` in the workflow below with your repository's name.
-#    Replace the value of `aws-region` in the workflow below with your repository's region.
-#
-# 2. Create an ECS task definition, an ECS cluster, and an ECS service.
-#    For example, follow the Getting Started guide on the ECS console:
-#      https://us-east-2.console.aws.amazon.com/ecs/home?region=us-east-2#/firstRun
-#    Replace the values for `service` and `cluster` in the workflow below with your service and cluster names.
-#
-# 3. Store your ECS task definition as a JSON file in your repository.
-#    The format should follow the output of `aws ecs register-task-definition --generate-cli-skeleton`.
-#    Replace the value of `task-definition` in the workflow below with your JSON file's name.
-#    Replace the value of `container-name` in the workflow below with the name of the container
-#    in the `containerDefinitions` section of the task definition.
-#
-# 4. Store an IAM user access key in GitHub Actions secrets named `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
-#    See the documentation for each action used below for the recommended IAM policies for this IAM user,
-#    and best practices on handling the access key credentials.
-
 on:
   push:
     branches:
@@ -35,11 +9,16 @@ on:
 
 name: Deploy to Amazon ECS
 
+env:
+  ECSPRESSO_VER: v0.17.1
+
 jobs:
   build:
     name: Build
     runs-on: ubuntu-18.04
     timeout-minutes: 300
+    outputs:
+      image_url: ${{ steps.build-image.outputs.image_url }}
 
     steps:
     - name: Checkout
@@ -78,7 +57,7 @@ jobs:
         docker build --target=runner --cache-from $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER --cache-from $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER -t $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:latest -t $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_BUILDER
         docker push $ECR_REGISTRY/$ECR_REPOSITORY_RUNNER
-        echo "::set-output name=image_tag::$IMAGE_TAG"
+        echo "::set-output name=image_url::$ECR_REGISTRY/$ECR_REPOSITORY_RUNNER:$IMAGE_TAG"
 
     - name: Job Result
       uses: 8398a7/action-slack@v3
@@ -94,7 +73,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-
   deploy:
     name: Deploy
     needs: build
@@ -102,14 +80,11 @@ jobs:
     timeout-minutes: 300
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v1
-
     - name: setup tool
       id: setup-tool
       run: |
         pwd
-        curl -L -o /tmp/ecspresso https://github.com/kayac/ecspresso/releases/download/v0.17.1/ecspresso-v0.17.1-linux-amd64
+        curl -L -o /tmp/ecspresso https://github.com/kayac/ecspresso/releases/download/${{ env.ECSPRESSO_VER }}/ecspresso-${{ env.ECSPRESSO_VER }}-linux-amd64
         chmod +x /tmp/ecspresso
 
     - name: Configure AWS credentials
@@ -126,12 +101,31 @@ jobs:
 #      run: |
 #        cd ecspresso && /tmp/ecspresso run --config config.yaml --task-def=ecs-run-task.json 
 
+    - name: Fetch ECS Settings
+      id: fetch-ecs-settings
+      run: |
+        /tmp/ecspresso init --region ap-northeast-1 --cluster nukegara-cluster --service nukegara --config config.yaml
+
+    - name: render task definition
+      id: render-app-container
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ecs-task-def.json
+        container-name: app
+        image: ${{ needs.build.outputs.image_url }}
+
+    - name: Overwrite task definisions
+      id: overwrite-task-definitions
+      run: |
+        echo ${{ steps.render-app-container.outputs.task-definition }} > ecs-task-def.json
+        cat ecs-task-def.json
+
     - name: Deploy ECS Service
       id: deploy-service
       env:
         IMAGE_TAG: ${{ steps.build-image.outputs.image_tag }}
       run: |
-        cd ecspresso && /tmp/ecspresso deploy --config config.yaml --rollback-events DEPLOYMENT_FAILURE
+        /tmp/ecspresso deploy --config config.yaml --rollback-events DEPLOYMENT_FAILURE
 
     - name: Job Result
       uses: 8398a7/action-slack@v3
