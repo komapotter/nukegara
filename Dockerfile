@@ -1,4 +1,4 @@
-FROM golang:1.13.3 as builder
+FROM golang:1.14.7 as builder
 
 RUN mkdir -p /go/src/nukegara
 WORKDIR /go/src/nukegara

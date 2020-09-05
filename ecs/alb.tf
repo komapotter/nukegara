@@ -14,7 +14,7 @@
 #    aws_security_group.alb_sg.id,
 #  ]
 #}
-#
+
 #resource "aws_lb_listener" "http" {
 #  load_balancer_arn = aws_lb.nukegara.arn
 #  port              = "18080"
@@ -29,7 +29,7 @@
 #    ignore_changes = [default_action]
 #  }
 #}
-#
+
 #resource "aws_lb_listener" "https" {
 #  load_balancer_arn = aws_lb.nukegara.arn
 #  port              = "443"
@@ -37,20 +37,20 @@
 #  ssl_policy        = "ELBSecurityPolicy-2016-08"
 #  certificate_arn   = data.aws_acm_certificate.tokyo.arn
 #
-#  default_action {
-#    type             = "forward"
-#    target_group_arn = aws_lb_target_group.nukegara_foo.arn
-#  }
-#
 #  #  default_action {
-#  #    type = "fixed-response"
-#  #
-#  #    fixed_response {
-#  #      content_type = "text/plain"
-#  #      message_body = "Not Authorized Access"
-#  #      status_code  = "403"
-#  #    }
+#  #    type             = "forward"
+#  #    target_group_arn = aws_lb_target_group.nukegara_foo.arn
 #  #  }
+#
+#  default_action {
+#    type = "fixed-response"
+#
+#    fixed_response {
+#      content_type = "text/plain"
+#      message_body = "Not Authorized Access"
+#      status_code  = "403"
+#    }
+#  }
 #
 #  lifecycle {
 #    ignore_changes = [default_action]

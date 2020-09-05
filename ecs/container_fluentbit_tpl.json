@@ -1,0 +1,48 @@
+[
+  {
+    "name": "app",
+    "image": "${app_image_repo}",
+    "cpu": 0,
+    "memoryReservation": 300,
+    "essential": true,
+    "portMappings": [
+      {
+        "protocol": "tcp",
+        "hostPort": 1323,
+        "containerPort": 1323
+      }
+    ],
+    "logConfiguration": {
+	  "logDriver":"awsfirelens",
+	  "options": {
+	 	"Name": "firehose",
+	 	"region": "${log_region}",
+	 	"delivery_stream": "${log_stream}"
+	  }
+	},
+    "command": [],
+    "environment": [],
+    "secrets": []
+  },
+  {
+    "name": "log_router",
+    "image": "906394416424.dkr.ecr.ap-northeast-1.amazonaws.com/aws-for-fluent-bit:latest",
+    "cpu": 0,
+    "memoryReservation": 100,
+    "essential": true,
+    "firelensConfiguration": {
+	  "type": "fluentbit"
+	},
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${log_region}",
+        "awslogs-stream-prefix": "${log_stream}"
+      }
+    },
+    "command": [],
+    "environment": [],
+    "secrets": []
+  }
+]
