@@ -10,7 +10,7 @@ on:
 name: Deploy to Amazon ECS
 
 env:
-  ECSPRESSO_VER: v0.17.1
+  ECSPRESSO_VER: v0.17.3
 
 jobs:
   build:
@@ -84,12 +84,9 @@ jobs:
     timeout-minutes: 300
 
     steps:
-    - name: setup tool
-      id: setup-tool
-      run: |
-        pwd
-        curl -L -o /tmp/ecspresso https://github.com/kayac/ecspresso/releases/download/${{ env.ECSPRESSO_VER }}/ecspresso-${{ env.ECSPRESSO_VER }}-linux-amd64
-        chmod +x /tmp/ecspresso
+    - uses: kayac/ecspresso@v0
+      with:
+        version: ${{ env.ECSPRESSO_VER }}
 
     - name: Download image url
       uses: actions/download-artifact@v2
@@ -115,12 +112,12 @@ jobs:
 #      env:
 #        IMAGE_TAG: ${{ steps.build-image.outputs.image_tag }}
 #      run: |
-#        cd ecspresso && /tmp/ecspresso run --config config.yaml --task-def=ecs-run-task.json 
+#        ecspresso run --config config.yaml --task-def=ecs-run-task.json 
 
     - name: Fetch ECS Settings
       id: fetch-ecs-settings
       run: |
-        /tmp/ecspresso init --region ap-northeast-1 --cluster nukegara-cluster --service nukegara --config config.yaml
+        ecspresso init --region ap-northeast-1 --cluster nukegara-cluster --service nukegara --config config.yaml
 
     - name: render task definition
       id: render-app-container
@@ -141,7 +138,7 @@ jobs:
       env:
         IMAGE_TAG: ${{ steps.build-image.outputs.image_tag }}
       run: |
-        /tmp/ecspresso deploy --config config.yaml --rollback-events DEPLOYMENT_FAILURE
+        ecspresso deploy --config config.yaml --rollback-events DEPLOYMENT_FAILURE
 
     - name: Job Result
       uses: 8398a7/action-slack@v3
