@@ -111,7 +111,8 @@ resource "aws_iam_policy" "ecs_task_role_policy" {
     {
       "Action": [
         "s3:Get*",
-        "s3:List*"
+        "s3:List*",
+        "firehose:PutRecordBatch"
       ],
       "Effect": "Allow",
       "Resource": "*"

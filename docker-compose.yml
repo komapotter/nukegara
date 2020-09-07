@@ -14,6 +14,22 @@ services:
 #      - dd-agent
 #    depends_on:
 #      - dd-agent
+#    logging:
+#      driver: "fluentd"
+#      options:
+#        fluentd-address: "localhost:24224"
+#        tag: "nukegara"
+#    depends_on:
+#      - fluent-bit
+
+#  fluent-bit:
+#    container_name: FluentBit
+#    build:
+#      context: .
+#      dockerfile: Dockerfile-fluent-bit
+#    ports:
+#      - "24224:24224"
+#    env_file: .env
 
 #  dd-agent:
 #    container_name: dd-agent

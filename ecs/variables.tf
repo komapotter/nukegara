@@ -8,3 +8,5 @@ variable "app_domain" {
 variable "ec2_image_id" {}
 variable "ec2_instance_type" {}
 variable "key_name" {}
+variable "logentries_host" {}
+variable "logentries_uri" {}

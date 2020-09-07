@@ -13,13 +13,20 @@
       }
     ],
     "logConfiguration": {
-	  "logDriver":"awsfirelens",
-	  "options": {
-	 	"Name": "firehose",
-	 	"region": "${log_region}",
-	 	"delivery_stream": "${log_stream}"
-	  }
-	},
+      "logDriver":"awsfirelens",
+      "options": {
+      	"Name":"http",
+      	"Host": "${logentries_host}",
+      	"Port": "443",
+      	"tls": "on",
+      	"tls.verify": "off",
+      	"Format": "json_lines"
+      },
+      "secretOptions": [{
+        "name": "URI",
+        "valueFrom": "${logentries_uri}"
+      }]
+    },
     "command": [],
     "environment": [],
     "secrets": []

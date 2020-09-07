@@ -9,3 +9,4 @@ vendor/
 .terraform/
 bin/
 .envrc
+terraform.tfvars
