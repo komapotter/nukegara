@@ -1,7 +1,7 @@
 on:
   workflow_dispatch:
     branches:
-      - develop
+      - master
     paths-ignore:
       - 'ecs/**'
       - 'aks/**'
