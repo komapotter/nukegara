@@ -1,7 +1,5 @@
 on:
   workflow_dispatch:
-    branches:
-      - master
     paths-ignore:
       - 'ecs/**'
       - 'aks/**'
